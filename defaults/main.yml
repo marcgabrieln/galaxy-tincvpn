@@ -1,0 +1,4 @@
+---
+
+tinc_root_folder: /etc/tinc
+network_interface: "/dev/net/tun"

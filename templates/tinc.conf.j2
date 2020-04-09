@@ -1,0 +1,10 @@
+Name = {{ inventory_hostname }}
+PrivateKeyFile = /etc/tinc/{{ network_name }}/rsa_key.priv
+Device = {{ network_interface }}
+Port = {{ network_port }}
+Compression = {{ network_compression }}
+AddressFamily = ipv4
+
+{% for node_to_connect in node_list[inventory_hostname].connect_to %}
+ConnectTo={{ node_to_connect.name }}
+{% endfor %}

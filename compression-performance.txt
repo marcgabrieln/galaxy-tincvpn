@@ -1,0 +1,20 @@
+     Compression = level (0)
+             This option sets the level of compression used for UDP packets.  Possible values are 0 (off), 1 (fast zlib) and any
+             integer up to 9 (best zlib), 10 (fast lzo) and 11 (best lzo).
+
+For simple iperf test. node to node.
+host 1 acts as server. 2 is client
+
+Via Internal KVM br0 interface
+without VPN:    18.4 GBytes  15.8 Gbits/sec
+LZ0-fast:       1.15 GBytes   987 Mbits/sec <<< WINNER
+NO COMPRESSION: 1009 MBytes   846 Mbits/sec
+LZ0-best:        834 MBytes   699 Mbits/sec
+Zlib-fast:       538 MBytes   451 Mbits/sec
+Zlib-best:       446 MBytes   374 Mbits/sec
+Zlib-medium3:    442 MBytes   370 Mbits/sec
+
+To an external server OVH arcturus
+LZO-best:  8.12 MBytes  6.34 Mbits/sec
+DirectLink:    8.50 MBytes  6.91 Mbits/sec
+LZO-fast:   228 MBytes   189 Mbits/sec # Over a 100Mbps net. results may vary

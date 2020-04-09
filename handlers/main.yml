@@ -1,0 +1,23 @@
+---
+# handlers file for tinc
+- name: tinc service enabled
+  systemd:
+    name: tinc@{{ network_name }}
+    enabled: yes
+
+- name: tinc service started
+  systemd:
+    name: tinc@{{ network_name }}
+    state: started
+    enabled: yes
+
+- name: tinc service restarted
+  systemd:
+    name: tinc@{{ network_name }}
+    state: restarted
+    enabled: yes
+
+- name: tinc service reloaded
+  systemd:
+    name: tinc@{{ network_name }}
+    state: reloaded

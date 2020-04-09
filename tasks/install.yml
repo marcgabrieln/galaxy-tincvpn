@@ -1,0 +1,120 @@
+---
+
+# TODO
+# might need "iptables -P FORWARD ACCEPT" in case of docker is installed.
+
+- name: Install or ensure last version of tinc and ifconfig
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 28800
+  register: apt_result
+  loop:
+    - tinc
+    - net-tools
+
+- name: Show changes in tinc install
+  debug:
+    var: apt_result.stdout_lines
+  when: apt_result.changed
+
+- name: Ensure network folder structures exist
+  file:
+    path: "{{ tinc_root_folder }}/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0775'
+  loop:
+    - "{{ network_name }}"
+    - "{{ network_name }}/hosts"
+
+- name: Check if RSA keypairs exist
+  stat:
+    path: "/etc/tinc/{{ network_name }}/rsa_key.priv"
+  register: rsa_keyfile
+
+- name: Create RSA keyfiles
+  shell: |
+    printf '\n\n' |tincd -K 2048 -n {{ network_name }}
+  when: rsa_keyfile.stat.exists == false
+
+- name: Fetch tinc hosts file after key creation
+  fetch:
+    src: "/etc/tinc/{{ network_name }}/rsa_key.pub"
+    dest: "files/{{ network_name }}/rsa_keys/{{ inventory_hostname }}.pub"
+    flat: yes
+
+- name: Uncomment line from /etc/default/tinc
+  lineinfile:
+    dest: /etc/default/tinc
+    regexp: '^#\ EXTRA='
+    line: 'EXTRA="-d"'
+
+- name: Ensure VPN is enabled
+  lineinfile:
+    path: /etc/tinc/nets.boot
+    regexp: "{{ network_name }}"
+    line: "{{ network_name }}"
+
+- name: Copy config files
+  template:
+    src: "{{ item.src }}.j2"
+    dest: "/etc/tinc/{{ network_name }}/{{ item.src }}"
+    owner: root
+    group: root
+    mode: "{{ item.mode }}"
+  loop:
+    - { src: tinc-up, mode: '0755' }
+    - { src: tinc-down, mode: '0755' }
+    - { src: tinc.conf, mode: '0644' }
+
+- name: Push self host configuration
+  template:
+    src: host-public.j2
+    dest: /etc/tinc/{{ network_name }}/hosts/{{ item }}
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - "{{ inventory_hostname }}"
+
+- name: Push host configurations
+  template:
+    src: host.j2
+    dest: /etc/tinc/{{ network_name }}/hosts/{{ item.name }}
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - "{{ node_list[inventory_hostname].connect_to }}"
+  when: node_list[inventory_hostname].is_public == False
+
+- name: Push host configurations for public/gateway node
+  template:
+    src: host-public.j2
+    dest: /etc/tinc/{{ network_name }}/hosts/{{ item }}
+    owner: root
+    group: root
+    mode: '0644'
+  with_items:
+    - "{{ groups['members'] }}"
+  when: node_list[inventory_hostname].is_public == True
+
+- name: Add lines to hosts with IP
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ network_name }}.{{ item }}$'
+    line: "{{ node_list[item].network_address }} {{ network_name }}.{{ item }}"
+    state: present
+  loop: "{{ groups['members'] }}"
+
+- name: Force enable and start tinc service
+  systemd:
+    name: tinc@{{ network_name }}
+    state: started
+    enabled: yes
+
+- name: Force tinc to reload all configs
+  shell: pgrep tincd | xargs kill -sHUP

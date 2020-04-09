@@ -1,0 +1,26 @@
+galaxy_info:
+  author: Marc Navarro
+  description: Tinc-vpn cluster configuration role
+  Copyright (c): 2020 Marc Navarro
+  # Choose a valid license ID from https://spdx.org - some suggested licenses:
+  license: BSD-3-Clause
+
+  min_ansible_version: 2.9
+
+  # To view available platforms and versions (or releases), visit:
+  # https://galaxy.ansible.com/api/v1/platforms/
+
+  platforms:
+    - name: Debian
+      versions:
+      - 9
+      - 10
+    - name: Ubuntu
+      versions:
+      - 18.04
+
+  galaxy_tags: []
+    # NOTE: A tag is limited to a single word comprised of alphanumeric characters.
+    #       Maximum 20 tags per role.
+
+  dependencies: []

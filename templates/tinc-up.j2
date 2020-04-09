@@ -1,0 +1,3 @@
+#!/bin/bash
+
+ifconfig $INTERFACE {{ node_list[inventory_hostname].network_address }} netmask {{ network_mask }}

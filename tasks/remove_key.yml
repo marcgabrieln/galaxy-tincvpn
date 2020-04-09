@@ -1,0 +1,22 @@
+---
+
+- name: Remove public key from tinc hosts
+  file:
+    path: "/etc/tinc/{{ network_name }}/hosts/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ groups['removed'] }}"
+
+- name: Remove lines in /etc/hosts from member nodes
+  lineinfile:
+    dest: /etc/hosts
+    regexp: ".*{{ network_name }}.{{ item }}.*"
+    state: absent
+  with_items:
+    - "{{ groups['removed'] }}"
+
+- name: Make demon forget about deleted nodes
+  shell: pgrep tincd | xargs kill -sWINCH
+
+- name: Force daemon resync all connections
+  shell: pgrep tincd | xargs kill -sHUP

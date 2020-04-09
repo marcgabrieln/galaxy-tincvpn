@@ -1,0 +1,6 @@
+Address = {{ node_list[item].public_address }}
+Port = {{ network_port }}
+Compression = {{ network_compression }}
+Subnet={{ node_list[item].network_address }}/32
+
+{% include "files/" + network_name + "/rsa_keys/" + item + ".pub" ignore missing %}
