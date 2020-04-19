@@ -49,6 +49,8 @@ A vars file all.yml for the inventory may be needed to override default values
 
 Simple .yml structure for "inventories/{{ network_name }}/group_vars/members.yml":
 
+---
+node_list:
       vpn1:
         public_address: vpn1
         network_address: "{{ network_base }}.11"
