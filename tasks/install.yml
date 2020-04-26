@@ -13,6 +13,7 @@
   loop:
     - tinc
     - net-tools
+    - python-apt
 
 - name: Show changes in tinc install
   debug:
