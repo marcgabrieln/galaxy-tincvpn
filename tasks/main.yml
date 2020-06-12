@@ -2,19 +2,16 @@
 
 - name: Make sure tinc is installed or upgraded
   include: install.yml
-  become: yes
   tags: [install, upgrade]
   when: "'members' in group_names"
 
 - name: Remove tinc configuration from removed node
   include: remove.yml
-  become: yes
   tags: [remove]
   when: "'removed' in group_names"
 
 - name: Cleanup removed nodes information from cluster
   include: remove_key.yml
-  become: yes
   tags: [remove]
   when: "'members' in group_names"
 
