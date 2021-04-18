@@ -117,5 +117,12 @@
     state: started
     enabled: yes
 
+- name: Force restart if it was reconfigured
+  systemd:
+    name: tinc@{{ network_name }}
+    state: restarted
+    enabled: yes
+  when: rsa_keyfile.stat.exists == false
+
 - name: Force tinc to reload all configs
   shell: pgrep tincd | xargs kill -sHUP
