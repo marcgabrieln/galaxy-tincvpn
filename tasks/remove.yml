@@ -27,5 +27,4 @@
 - name: Stop service
   systemd:
     name: "tinc@{{ network_name }}"
-    state: stopped
     enabled: no
