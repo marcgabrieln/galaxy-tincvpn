@@ -12,12 +12,12 @@
     regexp: "{{ network_name }}"
     state: absent
 
-- name: Rremove full tinc conf {{ network_name }} folder
+- name: Remove full tinc conf {{ network_name }} folder
   file:
     path: "{{ tinc_root_folder }}/{{ network_name }}"
     state: absent
 
-- name: Rremove public key from tinc hosts
+- name: Remove public key from tinc hosts
   file:
     path: "/etc/tinc/{{ network_name }}/hosts/{{ item }}"
     state: absent
