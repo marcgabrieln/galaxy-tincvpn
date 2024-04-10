@@ -2,6 +2,7 @@
 
 # TODO
 # might need "iptables -P FORWARD ACCEPT" in case of docker is installed.
+# Be sure removed hosts are also removed from /etc/hosts
 
 - name: Install or ensure last version of tinc and ifconfig
   apt:
