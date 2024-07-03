@@ -1,3 +1,13 @@
+---
+created: 2024-04-09T14:41
+updated: 2024-06-20T21:57
+status: finished
+category: external
+tags:
+  - git
+  - tincvpn
+---
+
 Tinc VPN
 ========
 
@@ -14,8 +24,12 @@ Requirements
 Role fully tested on:
 - Debian 9
 - Debian 10
+- Debian 11
+- Debian 12
 - Ubuntu 18.04 
 - Ubuntu 20.04
+- Ubuntu 22.04
+- Raspbian
 
 Role Variables
 --------------
